@@ -1,6 +1,17 @@
 import React, { Components } from 'react';
+import ReactDOM from 'react-dom'
+import routes from '../config/routes.js'
 
 class Main extends React.Component {
+	constructor(props){
+		super(props);
+
+		window.onload = () => {
+			ReactDOM.render(<Routes />, 
+			document.getElementById('Main'));
+		}
+	}
+
 	render() {
 		return(
 
@@ -19,12 +30,12 @@ class Main extends React.Component {
 					<div className ="content-wrapper">
 						<div className="content">
 						 <h2 className="content-head is-center">
-						 <b> Welcome back user </b></h2>
+						 <b> Welcome back! </b></h2>
 							<div className="buttons">
-								<a className="button-error pure-button" href="createCharacter.js">Create character</a>
+								<a className="button-error pure-button" href="app.js" action="/create" method="GET">Create character</a>
 								<br></br>
 								<br></br>
-								<a className="button-error pure-button" href="forum.js">View other users characters</a>
+								<a className="button-error pure-button" href="forum.html" action="/forum" method="GET">View other users characters</a>
 							</div>
 						</div>
 					</div>
@@ -48,6 +59,6 @@ class Main extends React.Component {
 		);
 	}
 }
-module.exports = Main;
+export default Main;
 	
 

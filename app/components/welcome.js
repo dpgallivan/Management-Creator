@@ -3,94 +3,102 @@ import React from 'react';
 class Welcome extends React.Component {
   constructor(props) {
     super(props);
-  }
-  render() {
-    return (
-    
-    // Get the modal
-    const modal = document.getElementById('id01');
+   firebase.initializeApp({
+       apiKey: "AIzaSyB0UihSyhP1Vqa4Xty3BUdpogDcd3nBzNE",
+       authDomain: "character-creator-3c5d4.firebaseapp.com",
+       databaseURL: "https://character-creator-3c5d4.firebaseio.com",
+       projectId: "character-creator-3c5d4",
+      storageBucket: "character-creator-3c5d4.appspot.com",
+       messagingSenderId: "786656588768"
+   });
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      };
-    };
+   const txtEmail = document.getElementById("txtEmail");
+   const txtPassword = document.getElementById("txtPassword");
+   const btnLogin = document.getElementById("btnLogin");
+   const btnSignUp = document.getElementById("btnSignUp");
 
-  // Initialize Firebase
-  const config = {
-    apiKey: "AIzaSyB0UihSyhP1Vqa4Xty3BUdpogDcd3nBzNE",
-    authDomain: "character-creator-3c5d4.firebaseapp.com",
-    databaseURL: "https://character-creator-3c5d4.firebaseio.com",
-    projectId: "character-creator-3c5d4",
-    storageBucket: "character-creator-3c5d4.appspot.com",
-    messagingSenderId: "786656588768"
-  };
+   //Add Login Eveny
+   btnLogin.addEventListener("click", e => {
+   //If an event goes unhandled, its default action should not be taken as it normally would be
+    event.preventDefault();
+      //Get email and password
+      const email = $("#txtEmail").val().trim();
+      const password = $("#txtPassword").val().trim();
+      const auth = firebase.auth();
 
-  firebase.initializeApp(config);
-  const database = firebase.database();
+      //Login
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(e => alert(e.message));
 
-  // Button for signing up Email address and Password
-  $("#login").click(function(event){
+   });
+
+     //Add Signup Event
+   btnSignUp.addEventListener("click", e => {
     //If an event goes unhandled, its default action should not be taken as it normally would be
-  event.preventDefault();
-    // Grabs user input and stores them into variables
-  const newEmail = $("#email").val().trim();
-  const newPassword = $("#password").val().trim();
+    event.preventDefault();
+    //Get email and password
+    const email = $("#txtEmail").val().trim();
+    const password = $("#txtPassword").val().trim();
+    const auth = firebase.auth();
 
-  // Creates local "temporary" object for holding employee data
+    console.log(email);
+    console.log(password);
 
-  newObject = {
-    email: newEmail,
-    password: newPassword
-  };
+    //Sign In
+    auth.createUserWithEmailAndPassword(email, password)
+      .catch(e => alert(e.message));
 
-    // Uploads employee data to the database, this will "trigger" the "child_added" event
-    database.ref().push(newObject);
+   });
 
-      // Logs everything to console
-      console.log(newObject.email);
-      console.log(newObject.password);
+   btnLogout.addEventListener("click", e =>{
+    firebase.auth().signOut();
+   });
 
-      alert("Successfully Signed Up!");
+   //Add Realtime Listener
+   firebase.auth().onAuthStateChanged(firebaseUser => {
+    if(firebaseUser) {
+      console.log(firebaseUser);
+      console.log("User ID is " + firebaseUser.uid)
+      btnLogout.classList.remove("hide");
+    } else {
+      console.log("Not Logged In.");
+      btnLogout.classList.add("hide");
+    }
+   });
+  }
+   
+   render(){
+    return(
+      //set user iud to use with the users Email------
+    <div className="main-container">
+      
+      <h2>Login Form</h2>
 
-      // clears the input boxes
-      $("#email").val("");
-      $("#password").val("");
+      <form id='form'>
 
-  });
-      <h2>Modal Login Form</h2>
+        <div className="container">
+          <label><b>Username</b></label>
+        <input id="txtEmail" type="text" value="" placeholder="Enter Username" name="uname" required />
 
-      <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+        <label><b>Password</b></label>
+          <input id="txtPassword" type="password" value="" placeholder="Enter Password" name="psw" required />
+          
+          <button id="btnLogin" class="btn btn-action" >Login</button>
 
-      <div id="id01" className="modal">
-        
-        <form className="modal-content animate" action="/action_page.php">
-          <div className="imgcontainer">
-            <span onclick="document.getElementById('id01').style.display='none'" className="close" title="Close Modal">&times;</span>
-            <img src="img_avatar2.png" alt="Avatar" className="avatar" />
-          </div> 
+          <button id="btnSignUp" class="btn btn-secondary">SignUp</button>
 
-          <div className="container">
-            <label><b>Username</b></label>
-            <input id="email" type="text" placeholder="Enter Username" name="uname" required />
+          <button id="btnLogout" class="btn btn-action hide">Log Out</button>
 
-            <label><b>Password</b></label>
-            <input id="password" type="password" placeholder="Enter Password" name="psw" required />
-              
-            <button id="login" type="submit">Login</button>
-            <input type="checkbox" checked="checked" />
-          </div>
+        </div>
 
-          <div className="container" style="background-color:#f1f1f1">
-            <button type="button" onclick="document.getElementById('id01').style.display='none'" className="cancelbtn">Cancel</button>
-            <span className="psw">Forgot <a href="#">password?</a></span>
-          </div>
-        </form>
-      </div>
+      </form>
+    </div>
+
     );
   }
 }
-module.exports = Welcome; 
+
+   
+export default Welcome; 
 
 

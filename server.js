@@ -13,12 +13,12 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 
 app.use(express.static('./public'));
 
-// app.get('/welcome', function(req, res, err){
-// 	res.send(index.html);
-// 		console.log(err)
-// });
+app.get('/welcome', function(req, res, err){
+	res.send(__dirname + '/public/html/index.html');
+		console.log(err)
+});
 
-app.get('*', function(req, res, err){
+app.get('/', function(req, res, err){
 	res.sendFile(__dirname + '/public/html/index.html');
 		console.log(err);
 });
@@ -28,10 +28,10 @@ app.get('*', function(req, res, err){
 // 		console.log(err);
 // });
 
-// app.get('/forum', function(req, res, err){
-// 	res.sendFile(__dirname + '/public/html/forum.html');
-// 		console.log(err);
-// });
+app.get('/forum', function(req, res, err){
+	res.sendFile(__dirname + '/public/html/index.html');
+		console.log(err);
+});
 
 app.listen(3000, function() {
 	console.log('app running on port 3000')
