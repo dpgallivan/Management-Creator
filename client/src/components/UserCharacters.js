@@ -1,11 +1,5 @@
 // Dependencies
 import React, { Component } from "react";
-// import {
-//   BrowserRouter as Router,
-//   Link,
-//   Route,
-//   Switch,
-// } from 'react-router-dom';
 
 import CharacterForm from "./CharacterForm.js";
 import ShowComments from "./ShowComments.js";
@@ -112,108 +106,71 @@ class UserCharacters extends Component {
   	goToEdit = charKey => {
   		// console.log(charKey);
   		this.setState({charToEdit:charKey});
-  	}
+  	};
+
+  	finishEdit = () => {
+  		this.loadUserCharacters();
+  		this.setState({charToEdit:""});
+  	};
 
 	// Renders the page
 	render() {
-		// return (
-		// 	<Router>
-		// 	<div>
-		// 	<Switch>
-		// 	<Route exact path="/characters" render={() => <div>
-
-		// 		{!this.state.characters.length ?(
-		// 			<p>No characters to display</p>
-		// 		):(<br></br>)}
-
-		// 		{this.state.characters.map(character => (
-		// 			<div key={character.name+":"+character.createdAt} className="panel panel-default">
-		// 				<div className="panel-heading panel-heading-custom">
-            				
-
-  //           				{character.name ? (
-		// 		              <h1 className="panel-title"> {character.name} </h1>
-		// 		              ) : (
-		// 		              <h1 className="panel-title"> Awaiting Name </h1>
-		// 		              )
-		// 		            }
-  //         				</div>
-
-  //         				<div className="panel-body">
-  //         					{this.displayCharacter(character)}
-  //         				</div>
-
-  //         				<Link to="/test">Test</Link>
-		// 			</div>
-
-					
-		// 		))} </div> } />
-
-		// 	<Route exact path="/test" render={() => <div>Testing</div>} />
-		// 	</Switch>
-		// 	</div>
-		// 	</Router>
-				
-		// );
-
 
 		return (
-			<div>
+			
 
 			<div className="pure-g">
 				<div className="pure-u-2-3">
 					<div className ="content-wrapper">
 						<div className="content">
 
-				{!this.state.characters.length ?(
-					<p>No characters to display</p>
-				):(<br></br>)}
+							{!this.state.characters.length ?(
+								<p>No characters to display</p>
+							):(<br></br>)}
 
-				{this.state.charToEdit ?(
-					<CharacterForm characterKey={this.state.charToEdit} userKey={this.props.userKey}/>
-				):(
+							{this.state.charToEdit ?(
+								<CharacterForm characterKey={this.state.charToEdit} userKey={this.props.userKey} finishEdit={this.finishEdit}/>
+							):(
 
-				<div>
-					{this.state.characters.map(character => (
-						<div key={character.name+":"+character.createdAt} className="panel panel-default">
-							<div className="panel-heading panel-heading-custom">
-	            				
+							<div>
+								{this.state.characters.map(character => (
+									<div key={character.name+":"+character.createdAt} className="panel panel-default">
+										<div className="panel-heading panel-heading-custom">
+				            				
 
-	            				{character.name ? (
-					              <h1 className="panel-title"> {character.name} </h1>
-					              ) : (
-					              <h1 className="panel-title"> Awaiting Name </h1>
-					              )
-					            }
+				            				{character.name ? (
+								              <h1 className="panel-title"> {character.name} </h1>
+								              ) : (
+								              <h1 className="panel-title"> Awaiting Name </h1>
+								              )
+								            }
 
-					            {this.props.viewing ?(
-		          					<h1 className="panel-title"> by {character.userName} </h1>
-		          				):(<div></div>)}
-	          				</div>
+								            {this.props.viewing ?(
+					          					<h1 className="panel-title"> by {character.userName} </h1>
+					          				):(<div></div>)}
+				          				</div>
 
-	          				<div className="panel-body">
-	          					{this.displayCharacter(character)}
-	          				</div>
+				          				<div className="panel-body">
+				          					{this.displayCharacter(character)}
+				          				</div>
 
-	          				{!this.props.viewing ?(
-	          					<button className="btn btn-primary" onClick={() => this.goToEdit(character.key)}>Edit</button>
-	          				):(<div></div>)}
+				          				{!this.props.viewing ?(
+				          					<button className="btn btn-primary" onClick={() => this.goToEdit(character.key)}>Edit</button>
+				          				):(<div></div>)}
 
-	          				<ShowComments userKey={this.props.userKey} characterKey={character.key} />
-	          				
+				          				<ShowComments userKey={this.props.userKey} characterKey={character.key} />
+				          				
+									</div>
+
+								
+								))}
+
+							</div> )}
 						</div>
-
-					
-					))}
-
-				</div> )}
-
-
+					</div>
+				</div>
 			</div>
-												</div>
-											</div>
-										</div>
-			</div>
+			
 				
 		);
 	}

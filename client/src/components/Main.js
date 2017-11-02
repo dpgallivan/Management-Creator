@@ -36,17 +36,6 @@ const database = require("./firebase.js");
 // 	});
 // });
 
-const logOutCurrentUser = () => {
-
-	firebase.auth().signOut().then(function() {
-		  // Sign-out successful.
-		}).catch(function(error) {
-		  // An error happened.
-	}).then(function() {
-		window.location.href = "/";
-	});
-}
-
 // firebase.auth().signOut().then(function() {
 // 	  // Sign-out successful.
 // 	}).catch(function(error) {
@@ -66,7 +55,8 @@ const logOutCurrentUser = () => {
 class Main extends Component {
 
 	state = {
-		userKey:undefined
+		userKey:undefined,
+		userName:""
 		// userKey:"KDDVKfL7VxbkKOjPNwxFg0pP9cd2",
 		// characterKey:"-KwF2xFzAvVcDBBesku0"
 	}
@@ -77,6 +67,7 @@ class Main extends Component {
 		    	// User is signed in.
 		    	console.log(user.uid);
 		    	// window.user = user.uid;
+		    	this.getUserName(user.uid);
 		    	this.setState({userKey:user.uid});
 		  	} 
 
@@ -169,18 +160,20 @@ class Main extends Component {
 		});
 	};
 
-  	// render() {
-   //  	return (
-   //  		<div>
-	  //    		<CharacterForm userKey={this.state.userKey}/>
-	  //    		<CharacterForm characterKey={this.state.characterKey} userKey={this.state.userKey}/>
+	logOutCurrentUser = () => {
 
-	  //     		<UserCharacters userKey={this.state.userKey}/>
-	  //     		<UserCharacters />
+		firebase.auth().signOut().then(function() {
+			  // Sign-out successful.
+			}).catch(function(error) {
+			  // An error happened.
+		}).then(function() {
+			// setTimeout(function(){window.location.href = "/";},500);
+			// window.location.href = "/";
+			// console.log(this.state);
+		});
 
-	  //     	</div>
-	  //   );
-  	// }
+		this.setState({userKey: undefined});
+	};
 
   	loadUserCharacters() {
   		let userKey = this.state.userKey;
@@ -203,7 +196,7 @@ class Main extends Component {
   		if(this.state.userKey) {
   			return (
 	            <li className="pure-menu-item"><p className="pure-menu-link"
-	                onClick={() => logOutCurrentUser()}
+	                onClick={() => this.logOutCurrentUser()}
 	                > Log-out
 	            </p></li>
 	        )
@@ -218,6 +211,12 @@ class Main extends Component {
   		}
 
   		return null;
+  	}
+
+  	getUserName(uid) {
+  		database.ref(`users/${uid}`).once('value').then(function(user) {
+			this.setState({userName:user.val().name});
+		}.bind(this));
   	}
 
   	render() {
@@ -304,10 +303,10 @@ class Main extends Component {
 												<div className ="content-wrapper">
 													<div className="content">
 													 <h2 className="content-head is-center">
-													 <b> Welcome back user </b></h2>
+													 <b> Welcome back {this.state.userName}</b></h2>
 														<div className="buttons">
+															<Link to="/create" className="button-error pure-button">New Character</Link>
 															<Link to="/characters" className="button-error pure-button">Your Characters</Link>
-										     				<Link to="/create" className="button-error pure-button">New Character</Link>
 										     				<Link to="/public" className="button-error pure-button">Public Characters</Link>
 														</div>
 													</div>

@@ -1,6 +1,6 @@
 // Dependencies
 import React, { Component } from "react";
-// const Moment = require('moment');
+const Moment = require('moment');
 const database = require("./firebase.js");
 
 // Constants
@@ -115,25 +115,24 @@ class ShowComments extends Component {
 		// Turns each comment into a block
 		return (
 			
-			// comments.map(comment => (
-			// 	<div className="comment">
-			// 		<p className="commentBody text-left">{comment.message}</p>
-			// 		<p className="author">by {comment.userName} at {this.formatDate(comment.createdAt)}</p>
-			// 	</div>
-			// ))
-
 			comments.map(comment => (
-				<div key={comment.userKey+""+comment.createdAt} className="comment">
+				<div className="comment">
 					<p className="commentBody text-left">{comment.message}</p>
-					<p className="author">by {comment.userName} at {(comment.createdAt)}</p>
+					<p className="author">by {comment.userName} at {this.formatDate(comment.createdAt)}</p>
 				</div>
 			))
+
+			// comments.map(comment => (
+			// 	<div key={comment.userKey+""+comment.createdAt} className="comment">
+			// 		<p className="commentBody text-left">{comment.message}</p>
+			// 		<p className="author">by {comment.userName} at {(comment.createdAt)}</p>
+			// 	</div>
+			// ))
 			
 		)
 	};
 
-	// Adds commment to the current character
-	// *** want the page to refresh after submit ***
+	// Adds comment to the current character
 	uploadComment = event => {
 		event.preventDefault();
 
@@ -154,19 +153,16 @@ class ShowComments extends Component {
 		// Pushes new comment to the datbase
 		database.ref(`characters/${this.state.characterData.userKey}/${this.props.characterKey}/comments`)
 		.push(newComment).then(() => {
-			// Resets the state
-			// this.setState({
-			// 	comment:""
-			// });
-			window.location.href = window.location;
+			this.setState({comment:""});
+			this.loadCharacter();
 		});
 
 	};
 
-	// //Formats date from Date timestamp
-	// formatDate(timestamp) {
-	// 	return Moment(timestamp).format("hh:mma MM/DD/YYYY");
-	// };
+	//Formats date from Date timestamp
+	formatDate(timestamp) {
+		return Moment(timestamp).format("hh:mma MM/DD/YYYY");
+	};
 
 	// Renders the page
 	render() {

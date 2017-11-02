@@ -74,7 +74,7 @@ class CharacterForm extends Component {
             value={this.state[characteristic]}/>
 
           {!DefaultCharacteristics.includes(characteristic) ? (
-              <button className="btn btn-primary"
+              <button className="btn btn-danger"
                 onClick={() => this.deleteProperty(characteristic)}
                 > Delete 
               </button>
@@ -260,7 +260,11 @@ class CharacterForm extends Component {
     // Updates character in the database
     database.ref(`characters/${this.props.userKey}/${this.props.characterKey}`).update(output).then(() => {
       database.ref(`allCharacters/${this.props.characterKey}`).update(output).then(() => {
-        window.location.href = window.location;
+        // window.location.href = window.location;
+        // setTimeout(function(){window.location.href = window.location;},500);
+        // setTimeout(function(){window.location.href = "/characters";},500);
+
+        this.props.finishEdit();
       });
     });
   };
@@ -297,13 +301,13 @@ class CharacterForm extends Component {
 
               {this.props.characterKey ? (
                 <div>
-                  <button className="btn btn-primary"  
+                  <button className="btn btn-sucess"  
                     onClick={this.handleEdit}>Edit</button>
 
                   <ShowComments userKey={this.props.userKey} characterKey={this.props.characterKey} purpose="editing"/>
                 </div>
                 ) : (
-                <button className="btn btn-primary"  
+                <button className="btn btn-sucess"  
                   onClick={this.handleCreation}>Create</button>
                 )
               }
