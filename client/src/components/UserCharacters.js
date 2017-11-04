@@ -124,8 +124,6 @@ class UserCharacters extends Component {
 					<div className ="content-wrapper">
 						<div className="content">
 
-							<button className="btn btn-default refreshBtn" onClick={() => this.updateCharacterList()}>Refresh List</button>
-
 							{!this.state.characters.length ?(
 								<p>No characters to display</p>
 							):(null)}
@@ -135,6 +133,7 @@ class UserCharacters extends Component {
 							):(
 
 							<div>
+								<button className="btn btn-default refreshBtn" onClick={() => this.updateCharacterList()}>Refresh List</button>
 								{this.state.characters.map(character => (
 									<div key={character.name+":"+character.createdAt} className="panel panel-default">
 										<div className="panel-heading panel-heading-custom">

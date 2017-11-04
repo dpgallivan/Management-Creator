@@ -196,7 +196,7 @@ class CharacterForm extends Component {
     let empty = {};
 
     for (let key in stateObj) {
-      if(stateObj[key] !== undefined) {
+      if(stateObj[key] !== undefined && key !== "privacy") {
         empty[key] = "";
       }
     }
@@ -227,6 +227,10 @@ class CharacterForm extends Component {
         output[key] = (stateObj[key] + "").trim();
       }
 
+      else if (key === "privacy") {
+        output[key] = stateObj[key];
+      }
+
       else if (stateObj[key] === undefined) {
         output[key] = null;
         isEmpty = false;
@@ -242,8 +246,6 @@ class CharacterForm extends Component {
 
     output.updatedAt = currentTime;
 
-    console.log(output);
-
     // Updates character in the database
     database.ref(`characters/${this.props.userKey}/${this.props.characterKey}`).update(output).then(() => {
       database.ref(`allCharacters/${this.props.characterKey}`).update(output).then(() => {
@@ -252,7 +254,14 @@ class CharacterForm extends Component {
     });
   };
 
-  
+  changeToPrivate = () => {
+    this.setState({privacy:"private"});
+  };
+
+  changeToPublic = () => {
+    this.setState({privacy:"public"});
+  }
+
   // Renders the form to the page using the state
   render() {
     return (
@@ -275,10 +284,10 @@ class CharacterForm extends Component {
 
               <form id="radios">
                 <label className="checkbox-inline">
-                  <input type="radio" name="privacy" value="private" onChange={this.handleInputChange} /> private 
+                  <input type="radio" name="privacy" value="private" onClick={this.changeToPrivate} /> private 
                 </label>
                 <label className="checkbox-inline">
-                  <input type="radio" name="privacy" value="public" onChange={this.handleInputChange} /> public
+                  <input type="radio" name="privacy" value="public" onClick={this.changeToPublic} /> public
                 </label>
               </form>
 
