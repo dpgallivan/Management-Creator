@@ -14,139 +14,23 @@ firebase.initializeApp(config);
 
 const database = firebase.database();
 
-// database.ref().push({
-// 	name:"Test",
-// 	gender:"male",
-// 	age:"23"
-// });
-
-// const now = Date.now();
-
-// database.ref().set({
-// 	users:{
-// 		zero:{
-// 			name:"name",
-// 			email:"email",
-// 			createdAt: now
-// 		},
-
-// 		one:{
-// 			name:"name",
-// 			email:"email",
-// 			createdAt: now
-// 		}
-// 	},
-
-// 	characters:{
-// 		zero:{
-// 			cero:{
-// 				name:"name",
-// 				gender:"gender",
-// 				age:0,
-// 				createdAt: now,
-// 				updatedAt: now
-// 			},
-
-// 			uno:{
-// 				name:"name",
-// 				gender:"gender",
-// 				age:0,
-// 				createdAt: now,
-// 				updatedAt: now
-// 			}
-// 		},
-
-// 		one:{
-// 			dos:{
-// 				name:"name",
-// 				gender:"gender",
-// 				age:0,
-// 				createdAt: now,
-// 				updatedAt: now
-// 			},
-
-// 			tres:{
-// 				name:"name",
-// 				gender:"gender",
-// 				age:0,
-// 				createdAt: now,
-// 				updatedAt: now
-// 			}
-// 		}
-// 	}
-// });
-
-// database.ref("users/KDDVKfL7VxbkKOjPNwxFg0pP9cd2").set({
-// 	name:"YETC7",
-// 	email:"tyler_726@live.com",
-// 	createdAt: Date.now()
-// });
-
-// database.ref("characters/zero").push({
-// 	name:"Test-2",
-// 	gender:"male",
-// 	age:"23",
-// 	createdAt: now,
-// 	updatedAt: now
-// });
-
-// database.ref("characters/zero/-KvsGfGEZa8kYNYV_f3K").update({
-// 	name:"Test",
-// 	gender:"female",
-// 	age:23,
-// 	species:"human",
-// 	updatedAt: now
-// });
-
-// database.ref("characters/zero/-Kvs0PJ-16dZUbEzPscj").update({
-// 	name:"Test",
-// 	gender:"female",
-// 	age:23,
-// 	species:null
-// });
-
-// database.ref().once('value').then(snap => {
-// 	console.log(snap.val());
-// })
-
-// database.ref('characters/zero')
-//   .orderByChild('updatedAt')
-//   .on('value', function(snapshot) { //or child_added
-  
-//   snapshot.forEach(function(child) {
-//     console.log(child.val());
-//   });
-// });
 
 database.ref("characters").on("child_changed",function(user) {
-	// console.log(user.key);
 	database.ref(`characters/${user.key}`).on("child_added",function(char) {
 		let nextChar = char.val();
 		nextChar.userKey = user.key;
-		// console.log(nextChar);
 		database.ref(`allCharacters/${char.key}`).update(nextChar);
 	});
 
-	// database.ref(`characters/${user.key}`).on("child_removed",function(char) {
-	// 	// let deleteChar = char.val();
-	// 	// nextChar.userKey = user.key;
-	// 	// console.log(nextChar);
-
-	// 	console.log(char.val);
-	// 	database.ref(`allCharacters/${char.key}`).remove();
-	// });
 });
 
 database.ref("characters").on("child_added",function(user) {
-	// console.log(user.key);
 	database.ref(`characters/${user.key}`).on("child_added",function(char) {
 		let thisChar = char.val();
 		thisChar.userKey = user.key;
-		// console.log(thisChar);
 		database.ref(`allCharacters/${char.key}`).update(thisChar);
 
 		database.ref(`characters/${user.key}/${char.key}`).on("child_removed", function(trait) {
-			// console.log(trait.val());
 			database.ref(`allCharacters/${char.key}/${trait.key}`).remove();
 		});
 	});
@@ -159,10 +43,5 @@ database.ref("characters").on("child_added",function(user) {
 database.ref("users").on("child_removed",function(user) {
 	database.ref(`characters/${user.key}`).remove();
 });
-
-// database.ref("allCharacters").orderByChild("updatedAt")
-// 	.on("child_added", function(snapshot) {
-// 		console.log(snapshot.val());
-// 	});
 
 module.exports = database;

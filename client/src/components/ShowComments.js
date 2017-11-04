@@ -24,8 +24,6 @@ class ShowComments extends Component {
 	// Loads character from the database based on characterKey
 	loadCharacter() {
 
-		// console.log(this.props.characterKey);
-
 		database
 			.ref(`allCharacters/${this.props.characterKey}`)
 			.once('value')
@@ -36,15 +34,12 @@ class ShowComments extends Component {
 				return console.log("Character does not exist at this key");
 			}
 
-	    	// console.log(char.val());
 	    	this.setState({characterData:char.val()});
 	    });
 	};
 
 	// Sets current user to the state
 	loadAuthor() {
-
-		// console.log(this.props.userKey);
 
 		database
 			.ref(`users/${this.props.userKey}`)
@@ -56,7 +51,6 @@ class ShowComments extends Component {
 				return console.log("Error, user should be defined");
 			}
 
-	    	// console.log(user.val());
 	    	this.setState({author:user.val()});
 	    });
 	};
@@ -78,8 +72,6 @@ class ShowComments extends Component {
 				charArr.push({name:prop,value:character[prop]});
 			}
 		}
-
-		// console.log(charArr);
 
 
 		return (
@@ -107,8 +99,6 @@ class ShowComments extends Component {
 		for(let key in commentObj) {
 			comments.push(commentObj[key]);
 		}
-
-		// console.log(comments);
 
 		if(comments.lenght === 0) {return}
 
@@ -147,8 +137,6 @@ class ShowComments extends Component {
 			userName: this.state.author.name,
 			createdAt: Date.now()
 		}
-
-		console.log(newComment);
 
 		// Pushes new comment to the datbase
 		database.ref(`characters/${this.state.characterData.userKey}/${this.props.characterKey}/comments`)

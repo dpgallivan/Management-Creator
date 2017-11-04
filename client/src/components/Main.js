@@ -13,68 +13,24 @@ import UserCharacters from "./UserCharacters.js";
 const firebase = require('firebase');
 const database = require("./firebase.js");
 
-// firebase.auth().createUserWithEmailAndPassword("tyler_726@sbcglobal.net", "Testing").then(user => {
-// 	database.ref(`users/${user.uid}`).set({
-// 		key:user.uid,
-// 		email:user.email,
-// 		name:"placehoder",
-// 		createdAt:Date.now()
-// 	});
-// });
-
-// firebase.auth().signInWithEmailAndPassword("tyler_726@sbcglobal.net", "Testing").catch(function(error) {
-// 	// Handle Errors here.
-// 	var errorCode = error.code;
-// 	var errorMessage = error.message;
-// 	// ...
-// }).then(user => {
-// 	database.ref(`users/${user.uid}`).update({
-// 		key:user.uid,
-// 		email:user.email,
-// 		name:user.email,
-// 		lastSignedIn:Date.now()
-// 	});
-// });
-
-// firebase.auth().signOut().then(function() {
-// 	  // Sign-out successful.
-// 	}).catch(function(error) {
-// 	  // An error happened.
-// });
-
-// const CurrentUserCharacters = () => {
-// 	if (window.user) {
-// 		return <UserCharacters userKey={window.user}/>
-// 	}
-// 	// return <h1>{window.user}</h1>
-
-// 	return <h1>Loading</h1>
-// }
-
 
 class Main extends Component {
 
 	state = {
 		userKey:undefined,
 		userName:""
-		// userKey:"KDDVKfL7VxbkKOjPNwxFg0pP9cd2",
-		// characterKey:"-KwF2xFzAvVcDBBesku0"
 	}
 
 	componentWillMount() {
 	    firebase.auth().onAuthStateChanged(function(user) {
 		  	if (user) {
 		    	// User is signed in.
-		    	console.log(user.uid);
-		    	// window.user = user.uid;
 		    	this.getUserName(user.uid);
 		    	this.setState({userKey:user.uid});
 		  	} 
 
 		 	else {
 		    	// No user is signed in.
-		    	console.log("no user");
-		    	// window.user = null;
 		    	this.setState({userKey:undefined});
 		  	}
 		}.bind(this));
@@ -146,7 +102,6 @@ class Main extends Component {
 
 		firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
 			// Handle Errors here.
-			// var errorCode = error.code;
 			var errorMessage = error.message;
 
 			this.setState({loginError:errorMessage});
@@ -166,11 +121,7 @@ class Main extends Component {
 			  // Sign-out successful.
 			}).catch(function(error) {
 			  // An error happened.
-		}).then(function() {
-			// setTimeout(function(){window.location.href = "/";},500);
-			// window.location.href = "/";
-			// console.log(this.state);
-		});
+		}).then(function() {});
 
 		this.setState({userKey: undefined});
 	};
@@ -228,7 +179,7 @@ class Main extends Component {
 				    	<ul className="pure-menu-list">
 					        <li className="pure-menu-item"><Link className="pure-menu-link" to="/" >Home</Link></li>
 					        {this.logoutButton()}
-			        		<li className="pure-menu-item" id="title">Management creator</li>
+			        		<li className="pure-menu-item" id="title">Character Management</li>
 			        	</ul>
 					</div>
 
@@ -327,7 +278,7 @@ class Main extends Component {
 
 		    		<div className="footer">
 						<footer>
-							<p id="footerMsg"> Management Creator; ©Copyright Daniel G., Edric W., Eric C.</p>
+							<p id="footerMsg"> Character Management; ©Copyright Daniel G., Edric W., Eric C.</p>
 						</footer>
 					</div>
 	    		</div>
@@ -335,19 +286,6 @@ class Main extends Component {
 	    );
   	}
 
-  	// render() {
-   //  	return (
-   //  		<div>
-   //  			<Router>
-   //  				<Switch>
-   //  					<Route exact path="/" component={UserCharacters} />
-   //  					<Route exact path="/test" component={UserCharacters} />
-   //  					<Route render={() => <h1>Page not found</h1>} />
-   //  				</Switch>
-   //  			</Router>
-	  //     	</div>
-	  //   );
-  	// }
 }
 
 export default Main;

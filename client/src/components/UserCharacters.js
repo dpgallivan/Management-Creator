@@ -43,7 +43,6 @@ class UserCharacters extends Component {
 		    characters.push(char.val());
 		  });
 
-		  // console.log(characters);
 		  this.setState({characters:characters.reverse()});
 
 		}.bind(this));
@@ -58,8 +57,6 @@ class UserCharacters extends Component {
 		// Gets characters from database
 		database.ref(`allCharacters`)
 		  .orderByChild('updatedAt')
-		  // .orderByChild('privacy')
-		  // .equalTo("public")
 		  .once('value')
 		  .then(function(snapshots) {
 		  
@@ -70,7 +67,6 @@ class UserCharacters extends Component {
 		  	}
 		  });
 
-		  // console.log(characters);
 		  this.setState({characters:characters.reverse()});
 
 		}.bind(this));
@@ -80,8 +76,6 @@ class UserCharacters extends Component {
 	// Displays the characters characteristic
 	displayCharacter = character => {
 
-		// console.log(character);
-
 		let charArr = [];
 
 		// Creates a list of characteristic
@@ -90,8 +84,6 @@ class UserCharacters extends Component {
 				charArr.push({name:prop,value:character[prop]});
 			}
 		}
-
-		// console.log(charArr);
 
 		// Maps the array of characteristic to display it to the page
 		return (
@@ -104,13 +96,21 @@ class UserCharacters extends Component {
 	};
 
   	goToEdit = charKey => {
-  		// console.log(charKey);
   		this.setState({charToEdit:charKey});
   	};
 
   	finishEdit = () => {
   		this.loadUserCharacters();
   		this.setState({charToEdit:""});
+  	};
+
+  	updateCharacterList = () => {
+  		if (this.props.viewing) {
+			this.loadPublicCharacters();
+		}
+
+		else if(this.props.userKey)
+			this.loadUserCharacters();
   	};
 
 	// Renders the page
@@ -124,9 +124,11 @@ class UserCharacters extends Component {
 					<div className ="content-wrapper">
 						<div className="content">
 
+							<button className="btn btn-default refreshBtn" onClick={() => this.updateCharacterList()}>Refresh List</button>
+
 							{!this.state.characters.length ?(
 								<p>No characters to display</p>
-							):(<br></br>)}
+							):(null)}
 
 							{this.state.charToEdit ?(
 								<CharacterForm characterKey={this.state.charToEdit} userKey={this.props.userKey} finishEdit={this.finishEdit}/>

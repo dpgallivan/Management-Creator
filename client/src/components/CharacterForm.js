@@ -30,7 +30,7 @@ class CharacterForm extends Component {
       if(!char.val()) {
         console.log("Character not found");
       }
-      // console.log(char.val());
+
       this.setState(char.val());
     })
   };
@@ -42,7 +42,6 @@ class CharacterForm extends Component {
       [name]: value
     });
 
-    // console.log(this.state);
   };
 
   // Creates form based on the current state
@@ -55,14 +54,11 @@ class CharacterForm extends Component {
     for (let key in stateObj) {
       if(key !== "newProperty" 
         && !ReservedProperties.includes(key)
-        // && (!!stateObj[key] || stateObj[key] === '')
         && stateObj[key] !== undefined
       ) {
         characteristics.push(key);
       }
     }
-
-    // console.log(characteristics);
 
     // Displays all characteristics to the page and gives non-default characteristics a delete button
     return (
@@ -138,10 +134,6 @@ class CharacterForm extends Component {
       return false;
     }
 
-    // this.setState({
-    //   [characteristic]:""
-    // });
-
     return true;
   };
 
@@ -158,7 +150,6 @@ class CharacterForm extends Component {
     for(let key in stateObj) {
       if(key 
         && key !== "newProperty" 
-        // && (!!stateObj[key] || stateObj[key] === '' || stateObj[key] === 0) ) 
         && stateObj[key] !== undefined
       ){
 
@@ -187,8 +178,6 @@ class CharacterForm extends Component {
     output.privacy = this.state.privacy;
     output.userKey = this.props.userKey;
 
-    // console.log(output);
-
     database.ref(`users/${this.props.userKey}`).once('value').then(user => {
       if(!user.val()) {
         console.log("Error");
@@ -198,7 +187,6 @@ class CharacterForm extends Component {
 
       // Pushes character to the database
       database.ref(`characters/${user.val().key}`).push(output).then(function(data) {
-        // console.log(data);
         database.ref(`characters/${user.val().key}/${data.key}`).update({key:data.key});
       });
 
@@ -230,7 +218,6 @@ class CharacterForm extends Component {
       if(key 
         && key !== "newProperty" 
         && !ReservedProperties.includes(key)
-        // && (!!stateObj[key] || stateObj[key] === '' || stateObj[key] === 0) ) 
         && stateObj[key] !== undefined
       ){
         if((stateObj[key] + "").trim() !== "") {
@@ -260,10 +247,6 @@ class CharacterForm extends Component {
     // Updates character in the database
     database.ref(`characters/${this.props.userKey}/${this.props.characterKey}`).update(output).then(() => {
       database.ref(`allCharacters/${this.props.characterKey}`).update(output).then(() => {
-        // window.location.href = window.location;
-        // setTimeout(function(){window.location.href = window.location;},500);
-        // setTimeout(function(){window.location.href = "/characters";},500);
-
         this.props.finishEdit();
       });
     });
