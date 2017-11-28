@@ -1,4 +1,4 @@
-# Management-Creator
+# Character-Creator
 
 https://character-management-eed.herokuapp.com/
 
