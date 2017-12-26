@@ -5,7 +5,8 @@ const database = require("./firebase.js");
 
 // Constants
 const DefaultCharacteristics = ["name","age","gender"]; // Every Creation has at least these properties
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation","userCharacters"];
+const ReservedProperties = ["comments","privacy", "newProperty", "updatedAt","createdAt","userKey","key","userName","relationships","newRelation","userCharacters","relationshipType", "relationTo"];
+const ReservedKeys = ["newProperty","newRelation","userCharacters","relationshipType"];
 
 // Form users use to create/edit to character and stores info to the database
 class CharacterForm extends Component {
@@ -16,7 +17,8 @@ class CharacterForm extends Component {
     privacy:"private",
     newProperty:"",
     newRelation:"",
-    userCharacters:[]
+    userCharacters:[],
+    relationshipType:""
   };
 
   // If component mounts and there was a characterKey passed, fills the form for edit mode
@@ -46,7 +48,6 @@ class CharacterForm extends Component {
     this.setState({
       [name]: value
     });
-
   };
 
   // Creates form based on the current state
@@ -155,6 +156,7 @@ class CharacterForm extends Component {
     for(let key in stateObj) {
       if(key 
         && key !== "newProperty" 
+        && !ReservedKeys.includes(key)
         && stateObj[key] !== undefined
       ){
 
@@ -223,6 +225,7 @@ class CharacterForm extends Component {
       if(key 
         && key !== "newProperty" 
         && !ReservedProperties.includes(key)
+        && !ReservedKeys.includes(key)
         && stateObj[key] !== undefined
       ){
         if((stateObj[key] + "").trim() !== "") {
@@ -257,14 +260,6 @@ class CharacterForm extends Component {
         this.props.finishEdit();
       });
     });
-  };
-
-  changeToPrivate = () => {
-    this.setState({privacy:"private"});
-  };
-
-  changeToPublic = () => {
-    this.setState({privacy:"public"});
   };
 
   addRelation = () => {
@@ -302,7 +297,7 @@ class CharacterForm extends Component {
     
     return (
       chars.map(char => (
-        <option key={char.key}>{char.name} ({char.key})</option>
+        <option key={char.key} value={char.key}>{char.name} ({char.key})</option>
       ))
     );
 
@@ -330,10 +325,10 @@ class CharacterForm extends Component {
 
               <form id="radios">
                 <label className="checkbox-inline">
-                  <input type="radio" name="privacy" value="private" onClick={this.changeToPrivate} checked={this.state.privacy === "private"} /> private 
+                  <input type="radio" name="privacy" value="private" onChange={this.handleInputChange} checked={this.state.privacy === "private"} /> private 
                 </label>
                 <label className="checkbox-inline">
-                  <input type="radio" name="privacy" value="public" onClick={this.changeToPublic} checked={this.state.privacy === "public"}/> public
+                  <input type="radio" name="privacy" value="public" onChange={this.handleInputChange} checked={this.state.privacy === "public"}/> public
                 </label>
               </form>
 
@@ -368,7 +363,7 @@ class CharacterForm extends Component {
 
               {this.state.newRelation ? (
                 <div>
-                  <select id="relationship">
+                  <select id="relationship" name="relationshipType" value={this.state.relationshipType} onChange={this.handleInputChange}>
                     <option value="Parent">Parent</option>
                     <option value="Child">Child</option>
                     <option value="Sibling">Sibling</option>
@@ -378,7 +373,7 @@ class CharacterForm extends Component {
                     <option value="Enemy">Enemy</option>
                   </select>
 
-                  <select id="relationTo">
+                  <select id="relationTo" name="relationTo" value={this.state.relationTo} onChange={this.handleInputChange}>
                     {this.characterList()}
                   </select>
                 </div>
