@@ -278,11 +278,13 @@ class CharacterForm extends Component {
       
       // Adds each character to array
       snapshots.forEach(function(char) {
-        characters.push({
-          name:char.val().name,
-          key:char.val().key
-        });
-      });
+        if(!this.props.characterKey || this.props.characterKey !== char.val().key ) {
+          characters.push({
+            name:char.val().name,
+            key:char.val().key
+          });
+        }
+      }.bind(this));
 
       console.log(characters);
       this.setState({userCharacters:characters});
@@ -294,7 +296,7 @@ class CharacterForm extends Component {
   characterList = () => {
 
     let chars = this.state.userCharacters;
-    
+
     return (
       chars.map(char => (
         <option key={char.key} value={char.key}>{char.name} ({char.key})</option>
@@ -359,7 +361,7 @@ class CharacterForm extends Component {
 
               </form>
 
-              <button className="btn btn-sucess" onClick={this.addRelation}>New Relationship</button>
+              <button className="btn btn-sucess" onClick={this.addRelation} disabled = {this.state.userCharacters.length === 0}>New Relationship</button>
 
               {this.state.newRelation ? (
                 <div>
