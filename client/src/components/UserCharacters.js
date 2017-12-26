@@ -7,7 +7,7 @@ import ShowComments from "./ShowComments.js";
 const database = require("./firebase.js");
 
 // Constants
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships"];
+const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation"];
 
 // Displays all user characters or all public characters
 class UserCharacters extends Component {

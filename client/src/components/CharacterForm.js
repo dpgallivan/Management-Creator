@@ -5,7 +5,7 @@ const database = require("./firebase.js");
 
 // Constants
 const DefaultCharacteristics = ["name","age","gender"]; // Every Creation has at least these properties
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships"];
+const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation"];
 
 // Form users use to create/edit to character and stores info to the database
 class CharacterForm extends Component {
@@ -14,7 +14,8 @@ class CharacterForm extends Component {
     gender:"",
     age:"",
     privacy:"private",
-    newProperty:""
+    newProperty:"",
+    newRelation:""
   };
 
   // If component mounts and there was a characterKey passed, fills the form for edit mode
@@ -260,6 +261,10 @@ class CharacterForm extends Component {
 
   changeToPublic = () => {
     this.setState({privacy:"public"});
+  };
+
+  addRelation = () => {
+    this.setState({newRelation:true});
   }
 
   // Renders the form to the page using the state
@@ -317,6 +322,13 @@ class CharacterForm extends Component {
                 onClick={this.addProperty}>Add Property</button>
 
               </form>
+
+              <button className="btn btn-sucess" onClick={this.addRelation}>Add Relationship</button>
+
+              {this.state.newRelation ? (
+                <div>Test</div>
+                ) : (null)
+              }
 
             </div>
           </div>

@@ -4,7 +4,7 @@ const Moment = require('moment');
 const database = require("./firebase.js");
 
 // Constants
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships"];
+const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation"];
 
 // Displays one character to the user
 class ShowComments extends Component {
