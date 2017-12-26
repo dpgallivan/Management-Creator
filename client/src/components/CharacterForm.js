@@ -284,10 +284,10 @@ class CharacterForm extends Component {
 
               <form id="radios">
                 <label className="checkbox-inline">
-                  <input type="radio" name="privacy" value="private" onClick={this.changeToPrivate} /> private 
+                  <input type="radio" name="privacy" value="private" onClick={this.changeToPrivate} checked={this.state.privacy === "private"} /> private 
                 </label>
                 <label className="checkbox-inline">
-                  <input type="radio" name="privacy" value="public" onClick={this.changeToPublic} /> public
+                  <input type="radio" name="privacy" value="public" onClick={this.changeToPublic} checked={this.state.privacy === "public"}/> public
                 </label>
               </form>
 
