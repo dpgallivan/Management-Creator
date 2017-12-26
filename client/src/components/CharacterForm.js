@@ -5,7 +5,7 @@ const database = require("./firebase.js");
 
 // Constants
 const DefaultCharacteristics = ["name","age","gender"]; // Every Creation has at least these properties
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName"];
+const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships"];
 
 // Form users use to create/edit to character and stores info to the database
 class CharacterForm extends Component {
