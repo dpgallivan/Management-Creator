@@ -5,7 +5,7 @@ const database = require("./firebase.js");
 
 // Constants
 const DefaultCharacteristics = ["name","age","gender"]; // Every Creation has at least these properties
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation"];
+const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation","userCharacters"];
 
 // Form users use to create/edit to character and stores info to the database
 class CharacterForm extends Component {
@@ -15,11 +15,15 @@ class CharacterForm extends Component {
     age:"",
     privacy:"private",
     newProperty:"",
-    newRelation:""
+    newRelation:"",
+    userCharacters:[]
   };
 
   // If component mounts and there was a characterKey passed, fills the form for edit mode
   componentDidMount() {
+
+    this.loadCharacterList();
+
     if(this.props.characterKey) {
       this.fillForm(this.props.characterKey);
     }
@@ -265,7 +269,44 @@ class CharacterForm extends Component {
 
   addRelation = () => {
     this.setState({newRelation:true});
-  }
+  };
+
+  loadCharacterList = () => {
+
+    let characters = [];
+
+    // Gets characters from database
+    database.ref(`characters/${this.props.userKey}`)
+      .orderByChild('updatedAt')
+      .once('value')
+      .then(function(snapshots) {
+      
+      // Adds each character to array
+      snapshots.forEach(function(char) {
+        characters.push({
+          name:char.val().name,
+          key:char.val().key
+        });
+      });
+
+      console.log(characters);
+      this.setState({userCharacters:characters});
+
+    }.bind(this));
+
+  };
+
+  characterList = () => {
+
+    let chars = this.state.userCharacters;
+    
+    return (
+      chars.map(char => (
+        <option key={char.key}>{char.name} ({char.key})</option>
+      ))
+    );
+
+  };
 
   // Renders the form to the page using the state
   render() {
@@ -323,10 +364,24 @@ class CharacterForm extends Component {
 
               </form>
 
-              <button className="btn btn-sucess" onClick={this.addRelation}>Add Relationship</button>
+              <button className="btn btn-sucess" onClick={this.addRelation}>New Relationship</button>
 
               {this.state.newRelation ? (
-                <div>Test</div>
+                <div>
+                  <select id="relationship">
+                    <option value="Parent">Parent</option>
+                    <option value="Child">Child</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Family">Family</option>
+                    <option value="Ally">Ally</option>
+                    <option value="Rival">Rival</option>
+                    <option value="Enemy">Enemy</option>
+                  </select>
+
+                  <select id="relationTo">
+                    {this.characterList()}
+                  </select>
+                </div>
                 ) : (null)
               }
 
