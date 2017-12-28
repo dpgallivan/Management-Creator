@@ -15,7 +15,7 @@ class CharacterForm extends Component {
     gender:"",
     age:"",
     privacy:"private",
-    userCharacters:[],
+    userCharacters:{},
     relationships:[],
 
     newProperty:"",
@@ -158,7 +158,7 @@ class CharacterForm extends Component {
     // Sets outputed data for the database in output object
     for(let key in stateObj) {
       if(key 
-        && key !== "newProperty" 
+        && key !== "relationships" 
         && !ReservedKeys.includes(key)
         && stateObj[key] !== undefined
       ){
@@ -168,6 +168,10 @@ class CharacterForm extends Component {
         }
         
         output[key] = (stateObj[key] + "").trim();
+      }
+
+      else if (key === "relationships") {
+      
       }
 
       else if (stateObj[key] === undefined) {
@@ -271,7 +275,7 @@ class CharacterForm extends Component {
 
   loadCharacterList = () => {
 
-    let characters = [];
+    let characters = {};
 
     // Gets characters from database
     database.ref(`characters/${this.props.userKey}`)
@@ -282,10 +286,11 @@ class CharacterForm extends Component {
       // Adds each character to array
       snapshots.forEach(function(char) {
         if(!this.props.characterKey || this.props.characterKey !== char.val().key ) {
-          characters.push({
-            name:char.val().name,
-            key:char.val().key
-          });
+          // characters.push({
+          //   name:char.val().name,
+          //   key:char.val().key
+          // });
+          characters[char.val().key] = char.val().name
         }
       }.bind(this));
 
@@ -298,10 +303,19 @@ class CharacterForm extends Component {
 
   characterList = () => {
 
-    let chars = this.state.userCharacters;
+    let characters = this.state.userCharacters;
+
+    let charArr = [];
+
+    for(let key in characters) {
+      charArr.push({
+          name:characters[key],
+          key:key
+      });
+    }
 
     return (
-      chars.map(char => (
+      charArr.map(char => (
         <option key={char.key} value={char.key}>{char.name} ({char.key})</option>
       ))
     );
