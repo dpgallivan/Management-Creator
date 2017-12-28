@@ -366,13 +366,17 @@ class CharacterForm extends Component {
               {this.props.characterKey ? (
                 <div>
                   <button className="btn btn-sucess"  
-                    onClick={this.handleEdit}>Edit</button>
+                    onClick={this.handleEdit}
+                    disabled = {this.state.newRelation}>Edit
+                  </button>
 
                   <ShowComments userKey={this.props.userKey} characterKey={this.props.characterKey} purpose="editing"/>
                 </div>
                 ) : (
                 <button className="btn btn-sucess"  
-                  onClick={this.handleCreation}>Create</button>
+                  onClick={this.handleCreation}
+                  disabled = {this.state.newRelation}>Create
+                </button>
                 )
               }
 
