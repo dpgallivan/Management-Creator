@@ -170,14 +170,14 @@ class CharacterForm extends Component {
         output[key] = (stateObj[key] + "").trim();
       }
 
-      else if (key === "relationships") {
-      
-      }
-
       else if (stateObj[key] === undefined) {
         output[key] = null;
         isEmpty = false;
       }
+    }
+
+    if (stateObj.relationships.length) {
+      isEmpty = false;
     }
 
     // Won't push to database if all fields are empty
@@ -200,8 +200,37 @@ class CharacterForm extends Component {
       output.userName = user.val().name;
 
       // Pushes character to the database
-      database.ref(`characters/${user.val().key}`).push(output).then(function(data) {
-        database.ref(`characters/${user.val().key}/${data.key}`).update({key:data.key});
+      database.ref(`characters/${user.val().key}`).push(output).then(function(character) {
+        database.ref(`characters/${user.val().key}/${character.key}`).update({key:character.key});
+
+        // Pushes each new relationship to the database
+        stateObj.relationships.forEach(function(relation) {
+          database.ref(`characters/${user.val().key}/${character.key}/relationships`).push(relation).then(function(relationship) {
+
+            let newType = ""
+
+            switch (relation.type) {
+
+              case "Child":
+                newType = "Parent";
+                break;
+                
+              case "Parent":
+                newType = "Child";
+                break;
+                
+              default:
+                newType = relation.type;
+                break;
+            }
+
+            database.ref(`characters/${user.val().key}/${relation.charKey}/relationships/${relationship.key}`).update({
+              type:newType,
+              charKey:character.key,
+              charName:stateObj.name
+            });
+          });
+        })
       });
 
     });
@@ -212,6 +241,14 @@ class CharacterForm extends Component {
     for (let key in stateObj) {
       if(stateObj[key] !== undefined && key !== "privacy") {
         empty[key] = "";
+      }
+
+      else if (key === "relationships") {
+        empty[key] = [];
+      }
+
+      else if (key === "userCharacters") {
+        this.loadCharacterList();
       }
     }
 
@@ -325,9 +362,14 @@ class CharacterForm extends Component {
   addRelationship = () => {
     let rels = this.state.relationships;
 
+    let type = this.state.relationshipType;
+    let key = this.state.relationTo;
+    let name = this.state.userCharacters[key];
+
     rels.push({
-      type:this.state.relationshipType,
-      charKey:this.state.relationTo
+      type:type,
+      charKey:key,
+      charName:name
     });
 
     console.log(rels);
@@ -346,6 +388,8 @@ class CharacterForm extends Component {
       relationshipType:"",
       relationTo:""
     });
+
+    this.loadCharacterList();
   };
 
   // Renders the form to the page using the state
@@ -434,7 +478,7 @@ class CharacterForm extends Component {
                   onClick={this.exitRelationshipEdit}>Exit</button>
                 </div>
                 ) : (
-                  <button className="btn btn-primary" onClick={this.addRelation} disabled = {this.state.userCharacters.length === 0}>New Relationship</button>
+                  <button className="btn btn-primary" onClick={this.addRelation}>New Relationship</button>
               )}
 
             </div>
