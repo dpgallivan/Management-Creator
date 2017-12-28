@@ -6,7 +6,7 @@ const database = require("./firebase.js");
 // Constants
 const DefaultCharacteristics = ["name","age","gender"]; // Every Creation has at least these properties
 const ReservedProperties = ["comments","privacy", "newProperty", "updatedAt","createdAt","userKey","key","userName","relationships","newRelation","userCharacters","relationshipType", "relationTo"];
-const ReservedKeys = ["newProperty","newRelation","userCharacters","relationshipType"];
+const ReservedKeys = ["newProperty","newRelation","userCharacters","relationshipType","relationTo"];
 
 // Form users use to create/edit to character and stores info to the database
 class CharacterForm extends Component {
@@ -15,10 +15,13 @@ class CharacterForm extends Component {
     gender:"",
     age:"",
     privacy:"private",
+    userCharacters:[],
+    relationships:[],
+
     newProperty:"",
     newRelation:"",
-    userCharacters:[],
-    relationshipType:""
+    relationshipType:"",
+    relationTo:""
   };
 
   // If component mounts and there was a characterKey passed, fills the form for edit mode
@@ -305,6 +308,32 @@ class CharacterForm extends Component {
 
   };
 
+  addRelationship = () => {
+    let rels = this.state.relationships;
+
+    rels.push({
+      type:this.state.relationshipType,
+      charKey:this.state.relationTo
+    });
+
+    console.log(rels);
+
+    this.setState({
+      relationships:rels,
+      newRelation:false,
+      relationshipType:"",
+      relationTo:""
+    });
+  };
+
+  exitRelationshipEdit = () => {
+    this.setState({
+      newRelation:false,
+      relationshipType:"",
+      relationTo:""
+    });
+  };
+
   // Renders the form to the page using the state
   render() {
     return (
@@ -361,11 +390,10 @@ class CharacterForm extends Component {
 
               </form>
 
-              <button className="btn btn-sucess" onClick={this.addRelation} disabled = {this.state.userCharacters.length === 0}>New Relationship</button>
-
               {this.state.newRelation ? (
                 <div>
-                  <select id="relationship" name="relationshipType" value={this.state.relationshipType} onChange={this.handleInputChange}>
+                  <select id="relationshipType" name="relationshipType" value={this.state.relationshipType} onChange={this.handleInputChange}>
+                    <option value=""></option>
                     <option value="Parent">Parent</option>
                     <option value="Child">Child</option>
                     <option value="Sibling">Sibling</option>
@@ -376,11 +404,20 @@ class CharacterForm extends Component {
                   </select>
 
                   <select id="relationTo" name="relationTo" value={this.state.relationTo} onChange={this.handleInputChange}>
+                    <option value=""></option>
                     {this.characterList()}
                   </select>
+
+                  <button className="btn btn-sucess" type="submit"
+                  disabled = {this.state.relationTo === "" || this.state.relationshipType === ""}  
+                  onClick={this.addRelationship}>Add Relationship</button>
+
+                  <button className="btn btn-danger" type="submit"  
+                  onClick={this.exitRelationshipEdit}>Exit</button>
                 </div>
-                ) : (null)
-              }
+                ) : (
+                  <button className="btn btn-primary" onClick={this.addRelation} disabled = {this.state.userCharacters.length === 0}>New Relationship</button>
+              )}
 
             </div>
           </div>
