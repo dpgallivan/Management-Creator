@@ -206,6 +206,7 @@ class CharacterForm extends Component {
         // Pushes each new relationship to the database
         stateObj.relationships.forEach(function(relation) {
           database.ref(`characters/${user.val().key}/${character.key}/relationships`).push(relation).then(function(relationship) {
+            database.ref(`characters/${user.val().key}/${character.key}/relationships/${relationship.key}`).update({key:relationship.key});
 
             let newType = ""
 
@@ -227,8 +228,12 @@ class CharacterForm extends Component {
             database.ref(`characters/${user.val().key}/${relation.charKey}/relationships/${relationship.key}`).update({
               type:newType,
               charKey:character.key,
-              charName:stateObj.name
+              charName:stateObj.name,
+              key:relationship.key
             });
+
+            database.ref(`characters/${user.val().key}/${relation.charKey}`).update({updatedAt:currentTime});
+
           });
         })
       });
@@ -371,7 +376,8 @@ class CharacterForm extends Component {
     rels.push({
       type:type,
       charKey:key,
-      charName:name
+      charName:name,
+      key:Date.now()
     });
 
     this.setState({
@@ -389,6 +395,21 @@ class CharacterForm extends Component {
       relationTo:""
     });
 
+  };
+
+  ShowRelationships = () => {
+
+    let relationships = this.state.relationships;
+
+    if (relationships.lenght !== 0) {
+      return (
+        relationships.map(relation => (
+          <p className="relation" key={relation.key}>{relation.type}: {relation.charName}</p>
+        ))
+      );
+    }
+
+    return null;
   };
 
   // Renders the form to the page using the state
@@ -450,6 +471,8 @@ class CharacterForm extends Component {
                 onClick={this.addProperty}>Add Property</button>
 
               </form>
+
+              {this.ShowRelationships()}
 
               {this.state.newRelation ? (
                 <div>
