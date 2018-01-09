@@ -239,16 +239,17 @@ class CharacterForm extends Component {
     let empty = {};
 
     for (let key in stateObj) {
-      if(stateObj[key] !== undefined && key !== "privacy") {
-        empty[key] = "";
-      }
 
-      else if (key === "relationships") {
+      if (key === "relationships") {
         empty[key] = [];
       }
 
       else if (key === "userCharacters") {
         this.loadCharacterList();
+      }
+
+      else if(stateObj[key] !== undefined && key !== "privacy") {
+        empty[key] = "";
       }
     }
 
@@ -307,6 +308,7 @@ class CharacterForm extends Component {
   };
 
   addRelation = () => {
+    this.loadCharacterList();
     this.setState({newRelation:true});
   };
 
@@ -331,7 +333,6 @@ class CharacterForm extends Component {
         }
       }.bind(this));
 
-      console.log(characters);
       this.setState({userCharacters:characters});
 
     }.bind(this));
@@ -360,6 +361,7 @@ class CharacterForm extends Component {
   };
 
   addRelationship = () => {
+
     let rels = this.state.relationships;
 
     let type = this.state.relationshipType;
@@ -371,8 +373,6 @@ class CharacterForm extends Component {
       charKey:key,
       charName:name
     });
-
-    console.log(rels);
 
     this.setState({
       relationships:rels,
@@ -389,7 +389,6 @@ class CharacterForm extends Component {
       relationTo:""
     });
 
-    this.loadCharacterList();
   };
 
   // Renders the form to the page using the state
