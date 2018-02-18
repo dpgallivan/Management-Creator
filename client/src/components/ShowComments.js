@@ -4,10 +4,10 @@ const Moment = require('moment');
 const database = require("./firebase.js");
 
 // Constants
-const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey"];
+const ReservedProperties = ["comments","privacy","updatedAt","createdAt","userKey","key","userName","relationships","newRelation"];
 
 // Displays one character to the user
-class ShowCharacter extends Component {
+class ShowComments extends Component {
 
 	state = {
 		characterData: undefined,
@@ -23,6 +23,7 @@ class ShowCharacter extends Component {
 
 	// Loads character from the database based on characterKey
 	loadCharacter() {
+
 		database
 			.ref(`allCharacters/${this.props.characterKey}`)
 			.once('value')
@@ -33,16 +34,13 @@ class ShowCharacter extends Component {
 				return console.log("Character does not exist at this key");
 			}
 
-			if(char.val().privacy === "private") {
-				return console.log("N/A");
-			}
-	    	// console.log(char.val());
 	    	this.setState({characterData:char.val()});
 	    });
 	};
 
 	// Sets current user to the state
 	loadAuthor() {
+
 		database
 			.ref(`users/${this.props.userKey}`)
 			.once('value')
@@ -53,7 +51,6 @@ class ShowCharacter extends Component {
 				return console.log("Error, user should be defined");
 			}
 
-	    	// console.log(user.val());
 	    	this.setState({author:user.val()});
 	    });
 	};
@@ -75,8 +72,6 @@ class ShowCharacter extends Component {
 				charArr.push({name:prop,value:character[prop]});
 			}
 		}
-
-		// console.log(charArr);
 
 
 		return (
@@ -105,8 +100,6 @@ class ShowCharacter extends Component {
 			comments.push(commentObj[key]);
 		}
 
-		// console.log(comments);
-
 		if(comments.lenght === 0) {return}
 
 		// Turns each comment into a block
@@ -118,12 +111,18 @@ class ShowCharacter extends Component {
 					<p className="author">by {comment.userName} at {this.formatDate(comment.createdAt)}</p>
 				</div>
 			))
+
+			// comments.map(comment => (
+			// 	<div key={comment.userKey+""+comment.createdAt} className="comment">
+			// 		<p className="commentBody text-left">{comment.message}</p>
+			// 		<p className="author">by {comment.userName} at {(comment.createdAt)}</p>
+			// 	</div>
+			// ))
 			
 		)
-	}
+	};
 
-	// Adds commment to the current character
-	// *** want the page to refresh after submit ***
+	// Adds comment to the current character
 	uploadComment = event => {
 		event.preventDefault();
 
@@ -139,19 +138,16 @@ class ShowCharacter extends Component {
 			createdAt: Date.now()
 		}
 
-		console.log(newComment);
-
 		// Pushes new comment to the datbase
 		database.ref(`characters/${this.state.characterData.userKey}/${this.props.characterKey}/comments`)
-			.push(newComment);
+		.push(newComment).then(() => {
+			this.setState({comment:""});
+			this.loadCharacter();
+		});
 
-		// Resets the state
-		this.setState({
-			comment:""
-		})
 	};
 
-	// Formats date from Date timestamp
+	//Formats date from Date timestamp
 	formatDate(timestamp) {
 		return Moment(timestamp).format("hh:mma MM/DD/YYYY");
 	};
@@ -164,19 +160,10 @@ class ShowCharacter extends Component {
 					<p>There is no character to show</p>
 				) : (
 
-					<div className="panel panel-default">
-						<div className="panel-heading panel-heading-custom">
-	            			{this.state.characterData.name ? (
-					              <h1 className="panel-title"> {this.state.characterData.name} </h1>
-					        ) : (
-					              <h1 className="panel-title"> Awaiting Name </h1>
-					        )}
-	          			</div>
-
 	          			<div className="panel-body">
-	          				{this.displayCharacter(this.state.characterData)}
 	          				{this.displayComments(this.state.characterData.comments)}
-	          				{this.props.userKey ? (
+
+	          				{this.props.purpose !== "editing" ? (
 				              <form>
 				              	<input className="form-control" name="comment" type="text" 
 				                  onChange={this.handleInputChange}
@@ -186,11 +173,10 @@ class ShowCharacter extends Component {
 	              				  onClick={this.uploadComment}>Comment</button>
 				              </form>
 				              ) : (
-				              	<span></span>
+				              	<div></div>
 				              )
 				            }
 	          			</div>
-					</div>		
 				)}
 			</div>				
 		);
@@ -198,4 +184,4 @@ class ShowCharacter extends Component {
 }
 
 
-export default ShowCharacter;
+export default ShowComments;
